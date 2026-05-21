@@ -1,0 +1,84 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+data = pd.read_csv('online payment fraud detection dataset.csv')
+data.head()
+data.info()data.describe()
+obj = (data.dtypes == 'object')
+object_cols = list(obj[obj].index)
+print("Categorical variables:", len(object_cols))
+
+int_ = (data.dtypes == 'int')
+num_cols = list(int_[int_].index)
+print("Integer variables:", len(num_cols))
+
+fl = (data.dtypes == 'float')
+fl_cols = list(fl[fl].index)
+print("Float variables:", len(fl_cols))
+sns.countplot(x='type', data=data)
+sns.barplot(x='type', y='amount', data=data)
+data['isFraud'].value_counts()
+plt.figure(figsize=(15, 6))
+sns.distplot(data['step'], bins=50)
+plt.figure(figsize=(12, 6))
+sns.heatmap(data.apply(lambda x: pd.factorize(x)[0]).corr(),
+            cmap='BrBG',
+            fmt='.2f',
+            linewidths=2,
+            annot=True)
+type_new = pd.get_dummies(data['type'], drop_first=True)
+data_new = pd.concat([data, type_new], axis=1)
+data_new.head()
+X = data_new.drop(['isFraud', 'type', 'nameOrig', 'nameDest'], axis=1)
+y = data_new['isFraud']
+X.shape, y.shape
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42)
+import pandas as pd
+
+# Convert X_train and X_test to DataFrame if needed
+X_train = pd.DataFrame(X_train)
+X_test = pd.DataFrame(X_test)
+
+# Fill NaN values with column means (important step)
+X_train.fillna(X_train.mean(), inplace=True)
+X_test.fillna(X_test.mean(), inplace=True)
+
+# Ensure no NaN values are left
+print("NaN values in X_train:", X_train.isnull().sum().sum())
+print("NaN values in X_test:", X_test.isnull().sum().sum())
+print("NaN values in y_train:", pd.Series(y_train).isnull().sum())
+print("NaN values in y_test:", pd.Series(y_test).isnull().sum())
+y_train = pd.Series(y_train).fillna(y_train.mode()[0])  # Replace NaNs with most frequent class
+y_test = pd.Series(y_test).fillna(y_test.mode()[0])
+from xgboost import XGBClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import roc_auc_score as ras
+models = [
+    LogisticRegression(max_iter=1000),  # Ensure it converges
+    XGBClassifier(use_label_encoder=False, eval_metric="logloss"),  # Avoid warnings
+    RandomForestClassifier(n_estimators=7, criterion='entropy', random_state=7)
+]
+for model in models:
+    model.fit(X_train, y_train)  # Train model
+    print(f'{model} :')
+
+    # Predict probabilities
+    train_preds = model.predict_proba(X_train)[:, 1]
+    print('Training Accuracy : ', ras(y_train, train_preds))
+
+    y_preds = model.predict_proba(X_test)[:, 1]
+    print('Validation Accuracy : ', ras(y_test, y_preds))
+    print()
+from sklearn.metrics import ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+cm = ConfusionMatrixDisplay.from_estimator(models[1], X_test, y_test)
+
+cm.plot(cmap='Blues')
+
+plt.show()
