@@ -1,0 +1,46 @@
+Automated Detection of Fraudulent Online Transactions Using Behaviour-Based Machine Learning Models 
+This project focuses on detecting fraudulent online payment transactions using Machine Learning techniques. The dataset was analyzed, preprocessed, and used to train multiple classification models including Logistic Regression, Random Forest, and XGBoost to identify suspicious financial transactions with high accuracy.
+
+Features
+Data preprocessing and cleaning
+Exploratory Data Analysis (EDA)
+Fraud transaction visualization
+Feature engineering using categorical encoding
+Machine Learning model training and evaluation
+Comparison of multiple classification algorithms
+Confusion Matrix visualization for model performance
+Technologies Used
+Python
+Pandas
+NumPy
+Matplotlib
+Seaborn
+Scikit-learn
+XGBoost
+Models Implemented
+Logistic Regression
+Random Forest Classifier
+XGBoost Classifier
+Results
+
+The XGBoost Classifier achieved the best performance with approximately 99.4% validation accuracy, outperforming the other models in detecting fraudulent transactions.
+
+Dataset Information
+
+The dataset contains transaction details such as:
+
+Transaction type
+Transaction amount
+Sender and receiver balances
+Fraud labels
+Project Workflow
+Importing and understanding the dataset
+Data preprocessing and handling missing values
+Exploratory Data Analysis (EDA)
+Feature encoding and selection
+Splitting data into training and testing sets
+Model training and evaluation
+Fraud prediction and visualization
+Conclusion
+
+This project demonstrates how Machine Learning can be effectively applied to detect online payment fraud and improve transaction security. Among all models tested, XGBoost provided the highest accuracy and best fraud detection capability.
